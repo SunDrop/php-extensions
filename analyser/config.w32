@@ -1,0 +1,4 @@
+ARG_ENABLE("generator", "Enable GPE analyser extension support", "no");
+if (PHP_ANALYSER != "no") {
+    EXTENSION("analyser", "analyser.cc", true);
+}

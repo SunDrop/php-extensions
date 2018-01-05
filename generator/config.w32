@@ -1,0 +1,4 @@
+ARG_ENABLE("generator", "Enable GPE generator extension support", "no");
+if (PHP_GENERATOR != "no") {
+    EXTENSION("generator", "generator.cc", true);
+}
