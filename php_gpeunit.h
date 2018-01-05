@@ -24,7 +24,7 @@
 extern zend_module_entry gpeunit_module_entry;
 #define phpext_gpeunit_ptr &gpeunit_module_entry
 
-#define PHP_GPEUNIT_VERSION "0.1.0" /* Replace with version number for your extension */
+#define PHP_GPEUNIT_VERSION "2.0.0" /* Replace with version number for your extension */
 
 #ifdef PHP_WIN32
 #	define PHP_GPEUNIT_API __declspec(dllexport)

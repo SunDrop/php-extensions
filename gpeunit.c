@@ -84,6 +84,36 @@ static void php_gpeunit_init_globals(zend_gpeunit_globals *gpeunit_globals)
 */
 /* }}} */
 
+/**
+ * @param text GPE_Data
+ * @param int seed1
+ * @param int seed2
+ * @param int seed3
+ * @param int seed4
+ */
+PHP_FUNCTION(gpeunit_generate)
+{
+    char* GPEData = NULL;
+    int QRData_len, GPEData_len;
+    int seed1;
+    int seed2;
+    int seed3;
+    int seed4;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS( ) TSRMLS_CC, "sllll",
+        &GPEData, &GPEData_len,
+        &seed1, &seed2, &seed3, &seed4
+    ) == FAILURE) {
+        return;
+    }
+
+    return SUCCESS;
+//        int AnalyseGPE(const void* image, int imageSize, int extrnWhite, int blackBorder, int internWhite, int GPESize,
+//int seed1, int seed2, int seed3, int seed4, int localShiftsCount, int localShiftSize,
+//float RefPointsCountPercent, float NoiceCountPercent, const void* rsMemory, int rsMemorySize,
+//void** resultMemory, int* resultMemorySize);
+}
+
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(gpeunit)
@@ -144,6 +174,7 @@ PHP_MINFO_FUNCTION(gpeunit)
  */
 const zend_function_entry gpeunit_functions[] = {
 	PHP_FE(confirm_gpeunit_compiled,	NULL)		/* For testing, remove later. */
+	PHP_FE(gpeunit_generate, NULL)
 	PHP_FE_END	/* Must be the last line in gpeunit_functions[] */
 };
 /* }}} */
