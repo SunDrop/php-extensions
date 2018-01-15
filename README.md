@@ -8,7 +8,24 @@
 git clone -b php_exts --single-branch git@gitlab.unit.lan:unit/gze.git
 ```
 
-## Build extension
+## Requirements
+* php v 5.6.*
+* phpize (the same version)
+
+## Build
+```
+1. git clone git@github.com:php/php-src.git php-src
+2. git checkout PHP-5.6.30
+3. cd php-src/ext
+4. git clone -b php_exts --single-branch git@gitlab.unit.lan:unit/gze.git
+5. cd <ext_name>
+6. phpize --clean
+7. phpize
+8. ./configure
+9. make install
+```
+
+## Create|Update extension
 ### generator
 ```
 1. $ cd ..
