@@ -15,7 +15,7 @@ deploy:
       - >
         commit_hash=`cat /tmp/php_commit.cfg`;
         commitsCount=$(git rev-list $commit_hash...$CI_BUILD_REF --count);
-        changeSet=(`git log --name-only -$commitsCount ./`);
+        changeSet=(`git log --name-only --pretty=format: php_exts -$commitsCount ./`);
         projectsToBuild=();
         for(( i=0; i<${#changeSet[@]}; i++))
         do
