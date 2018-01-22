@@ -1,0 +1,19 @@
+build:
+  stage: build
+  variables:
+    USER: 's.proskurnya'
+    USER_TOKEN: 'e32fe3fb952ea0ccb004a2a5815a6c83'
+    ACCESS_TOKEN: '8220ad0d18'
+  script:
+      - >
+	projectsToBuild=();
+	changeSet=(`git diff --name-only HEAD~1..HEAD ./`);
+	for(( i=0; i<${#changeSet[@]}; i++))
+	do
+	  tmp=$( echo ${changeSet[$i]} | awk -F/ '{print $1}');
+	  if [[ " ${projectsToBuild[*]} " != *"$tmp"* ]] && [[ $tmp != *.* ]]; then
+	    projectsToBuild+=$tmp;
+	    curl -X POST "http://$USER:$USER_TOKEN@192.168.1.18:8080/job/php_ext_$tmp/build?token=$ACCESS_TOKEN"
+	    echo ${tmp}
+	  fi
+	done
