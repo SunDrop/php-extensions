@@ -4,7 +4,7 @@
 #include <ug_qa.h>
 
 PHP_FUNCTION(analyser_initialize)
-{	
+{
 	const void* protoStructIn;
 	size_t protoStructInLen;
 
