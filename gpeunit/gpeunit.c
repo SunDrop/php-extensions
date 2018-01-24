@@ -62,7 +62,6 @@ PHP_FUNCTION(gpeunit_analyze)
     int resultMemorySize;
     AnalyseGPEResult *funcResult;
 
-
     if (zend_parse_parameters(ZEND_NUM_ARGS( ) TSRMLS_CC, "slllllllllldds",
         &GPEData, &GPEDataLen,
         &seed1, &seed2, &seed3, &seed4,
@@ -75,13 +74,22 @@ PHP_FUNCTION(gpeunit_analyze)
     int res = AnalyseGPE(GPEData, GPEDataLen, externWhite, blackBorder, internWhite, GPESize,
         seed1, seed2, seed3, seed4, localShiftsCount, localShiftSize, RefPointsCountPercent, NoiseCountPercent,
         rsMemory, rsMemoryLen, &resultMemory, &resultMemorySize);
+
     if (res == 0 && resultMemorySize == sizeof(AnalyseGPEResult)) {
         funcResult = (AnalyseGPEResult*)resultMemory;
 
         // ...... copy data to your vars ....
+        array_init(return_value);
+        add_assoc_long(return_value, "status", funcResult->status);
+        add_assoc_string(return_value, "data", funcResult->GPEData, 1);
+        add_assoc_double(return_value, "score", funcResult->score);
+        add_assoc_double(return_value, "scoreAdv", funcResult->scoreAdv);
+        add_assoc_long(return_value, "shifts", funcResult->localShifts);
 
         free(funcResult->GPEData);
         free(funcResult);
+
+        return;
     }
 
     return;
