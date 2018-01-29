@@ -18,6 +18,8 @@ struct AnalyseGPEResult_t{
     uint32_t localShifts;
 } __attribute__((aligned(1)));
 
+GPE_UNIT_IMPORT const char* Version();
+
 GPE_UNIT_IMPORT int
 AnalyseGPE(const void *image, int imageSize, int extrnWhite, int blackBorder, int internWhite, int GPESize,
            int seed1, int seed2, int seed3, int seed4, int localShiftsCount, int localShiftSize,

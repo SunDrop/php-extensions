@@ -7,19 +7,6 @@
 typedef struct AnalyseGPEResult_t AnalyseGPEResult;
 
 static int le_gpeunit;
-PHP_FUNCTION(confirm_gpeunit_compiled)
-{
-	char *arg = NULL;
-	int arg_len, len;
-	char *strg;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
-		return;
-	}
-
-	len = spprintf(&strg, 0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "gpeunit", arg);
-	RETURN_STRINGL(strg, len, 0);
-}
 
 PHP_FUNCTION(gpeunit_generate)
 {
@@ -56,20 +43,39 @@ PHP_FUNCTION(gpeunit_analyze)
     int localShiftSize;
     float RefPointsCountPercent;
     float NoiseCountPercent;
-    char* rsMemory;
+    zval *zvalRsMemory;
     int rsMemoryLen;
+    void* rsMemory;
+//    char* rsMemory;
+//    int rsMemoryLen;
+//    char* rsMemoryBase64;
+//    int rsMemoryBase64Len;
     void* resultMemory;
     int resultMemorySize;
     AnalyseGPEResult *funcResult;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS( ) TSRMLS_CC, "slllllllllldds",
+    if (zend_parse_parameters(ZEND_NUM_ARGS( ) TSRMLS_CC, "sllllllllllddzl",
         &GPEData, &GPEDataLen,
         &seed1, &seed2, &seed3, &seed4,
         &externWhite, &blackBorder, &internWhite, &GPESize, &localShiftsCount, &localShiftSize,
-        &RefPointsCountPercent, &NoiseCountPercent, &rsMemory, &rsMemoryLen
+        &RefPointsCountPercent, &NoiseCountPercent,
+        &zvalRsMemory, &rsMemoryLen
+//        &rsMemory, &rsMemoryLen, &rsMemoryBase64, &rsMemoryBase64Len
         ) == FAILURE) {
             return;
     }
+
+    rsMemory = emalloc(rsMemoryLen);
+    memset(rsMemory, '\0', rsMemoryLen);
+    memcpy(rsMemory, Z_STRVAL_P(zvalRsMemory), rsMemoryLen);
+
+    php_printf("RS: %s\n", rsMemory);
+    php_printf("RS Len: %d\n", rsMemoryLen);
+
+//    php_printf("\nrsMemory %s\n", rsMemory);
+//    php_printf("\nrsMemoryLen %d\n", rsMemoryLen);
+//    php_printf("\nrsMemoryHex %x\n", rsMemory);
+//    php_printf("\nrsMemoryBase64 %x\n", rsMemoryBase64);
 
     int res = AnalyseGPE(GPEData, GPEDataLen, externWhite, blackBorder, internWhite, GPESize,
         seed1, seed2, seed3, seed4, localShiftsCount, localShiftSize, RefPointsCountPercent, NoiseCountPercent,
@@ -90,37 +96,71 @@ PHP_FUNCTION(gpeunit_analyze)
         free(funcResult);
 
         return;
+    } else {
+//        RETVAL_STRING((char*)resultMemory, 1);
+        php_printf("Error: %s\n", resultMemory);
+        free(resultMemory);
+//        return;
     }
 
-    return;
+    RETURN_LONG(res);
 };
+
+const char * gpeunit_version()
+{
+    return PHP_GPEUNIT_VERSION;
+}
+
+const char * gpeunit_lib_version()
+{
+    return Version();
+}
+
+PHP_FUNCTION(gpeunit_version)
+{
+    RETVAL_STRING(gpeunit_version(), 0);
+}
+
+PHP_FUNCTION(gpeunit_lib_version)
+{
+    RETVAL_STRING(gpeunit_lib_version(), 0);
+}
 
 PHP_MINFO_FUNCTION(gpeunit)
 {
-	php_info_print_table_start();
-	php_info_print_table_header(2, "gpeunit support", "enabled");
-	php_info_print_table_end();
-
+    php_info_print_table_start();
+    php_info_print_table_header(2, "GPEUnIT support", "enabled");
+    php_info_print_table_row( 2, "GPEUnIT Lib version", gpeunit_lib_version());
+    php_info_print_table_row( 2, "GPEUnIT PHP Ext version", gpeunit_version());
+    php_info_print_table_row( 2, "GPEUnIT PHP Ext Revision", "$Id$");
+    php_info_print_table_end();
 }
 
+PHP_MINIT_FUNCTION(gpeunit)
+{
+    return SUCCESS;
+}
+
+
 const zend_function_entry gpeunit_functions[] = {
-	PHP_FE(confirm_gpeunit_compiled, NULL) /* For testing, remove later. */
-	PHP_FE(gpeunit_generate, NULL)
-	PHP_FE(gpeunit_analyze, NULL)
-	PHP_FE_END
+    PHP_FE(gpeunit_generate, NULL)
+    PHP_FE(gpeunit_analyze, NULL)
+    PHP_FE(gpeunit_version, NULL)
+    PHP_FE(gpeunit_lib_version, NULL)
+    PHP_FE_END
 };
 
 zend_module_entry gpeunit_module_entry = {
-	STANDARD_MODULE_HEADER,
-	PHP_GPEUNIT_EXTNAME,
-	gpeunit_functions,
-	NULL,				/* MINIT */
-	NULL,				/* MSHUTDOWN */
-	NULL,				/* RINIT */
-	NULL,				/* RSHUTDOWN */
-	PHP_MINFO(gpeunit),
-	PHP_GPEUNIT_VERSION,
-	STANDARD_MODULE_PROPERTIES
+    STANDARD_MODULE_HEADER,
+    PHP_GPEUNIT_EXTNAME,
+    gpeunit_functions,
+    PHP_MINIT(gpeunit),                /* MINIT */
+    NULL,                /* MSHUTDOWN */
+    NULL,                /* RINIT */
+    NULL,                /* RSHUTDOWN */
+    PHP_MINFO(gpeunit),
+    PHP_GPEUNIT_VERSION,
+    STANDARD_MODULE_PROPERTIES
 };
 
 #ifdef COMPILE_DL_GPEUNIT
