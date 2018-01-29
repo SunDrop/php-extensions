@@ -130,8 +130,8 @@ PHP_MINFO_FUNCTION(gpeunit)
 {
     php_info_print_table_start();
     php_info_print_table_header(2, "GPEUnIT support", "enabled");
-    php_info_print_table_row( 2, "GPEUnIT Lib version", gpeunit_lib_version());
     php_info_print_table_row( 2, "GPEUnIT PHP Ext version", gpeunit_version());
+    php_info_print_table_row( 2, "GPEUnIT Lib version", gpeunit_lib_version());
     php_info_print_table_row( 2, "GPEUnIT PHP Ext Revision", "$Id$");
     php_info_print_table_end();
 }
