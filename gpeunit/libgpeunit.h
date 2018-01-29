@@ -23,7 +23,7 @@ GPE_UNIT_IMPORT const char* Version();
 GPE_UNIT_IMPORT int
 AnalyseGPE(const void *image, int imageSize, int extrnWhite, int blackBorder, int internWhite, int GPESize,
            int seed1, int seed2, int seed3, int seed4, int localShiftsCount, int localShiftSize,
-           float RefPointsCountPercent, float NoiceCountPercent, const void *rsMemory, int rsMemorySize,
+           float RefPointsCountPercent, float NoiceCountPercent, const void *rsMemory, int rsMemorySize, const char* qruid,
            void **resultMemory, int *resultMemorySize);
 
 GPE_UNIT_IMPORT int

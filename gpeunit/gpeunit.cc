@@ -29,6 +29,8 @@ PHP_FUNCTION(gpeunit_generate)
 
 PHP_FUNCTION(gpeunit_analyze)
 {
+    char* Qruid = NULL;
+    int QruidLen;
     char* GPEData = NULL;
     int GPEDataLen;
     int seed1;
@@ -54,12 +56,13 @@ PHP_FUNCTION(gpeunit_analyze)
     int resultMemorySize;
     AnalyseGPEResult *funcResult;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS( ) TSRMLS_CC, "sllllllllllddzl",
+    if (zend_parse_parameters(ZEND_NUM_ARGS( ) TSRMLS_CC, "sllllllllllddzls|",
         &GPEData, &GPEDataLen,
         &seed1, &seed2, &seed3, &seed4,
         &externWhite, &blackBorder, &internWhite, &GPESize, &localShiftsCount, &localShiftSize,
         &RefPointsCountPercent, &NoiseCountPercent,
-        &zvalRsMemory, &rsMemoryLen
+        &zvalRsMemory, &rsMemoryLen,
+        &Qruid, QruidLen
 //        &rsMemory, &rsMemoryLen, &rsMemoryBase64, &rsMemoryBase64Len
         ) == FAILURE) {
             return;
@@ -69,17 +72,14 @@ PHP_FUNCTION(gpeunit_analyze)
     memset(rsMemory, '\0', rsMemoryLen);
     memcpy(rsMemory, Z_STRVAL_P(zvalRsMemory), rsMemoryLen);
 
-    php_printf("RS: %s\n", rsMemory);
-    php_printf("RS Len: %d\n", rsMemoryLen);
-
-//    php_printf("\nrsMemory %s\n", rsMemory);
+    php_printf("\nQr %s\n", Qruid);
 //    php_printf("\nrsMemoryLen %d\n", rsMemoryLen);
 //    php_printf("\nrsMemoryHex %x\n", rsMemory);
 //    php_printf("\nrsMemoryBase64 %x\n", rsMemoryBase64);
 
     int res = AnalyseGPE(GPEData, GPEDataLen, externWhite, blackBorder, internWhite, GPESize,
         seed1, seed2, seed3, seed4, localShiftsCount, localShiftSize, RefPointsCountPercent, NoiseCountPercent,
-        rsMemory, rsMemoryLen, &resultMemory, &resultMemorySize);
+        rsMemory, rsMemoryLen, Qruid, &resultMemory, &resultMemorySize);
 
     if (res == 0 && resultMemorySize == sizeof(AnalyseGPEResult)) {
         funcResult = (AnalyseGPEResult*)resultMemory;
