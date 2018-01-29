@@ -1,1 +1,1 @@
-*.cc indent
+*.cc filter=indent
