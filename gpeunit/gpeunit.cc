@@ -97,10 +97,9 @@ PHP_FUNCTION(gpeunit_analyze)
 
         return;
     } else {
-//        RETVAL_STRING((char*)resultMemory, 1);
-        php_printf("Error: %s\n", resultMemory);
+        RETVAL_STRING((char*)resultMemory, 1);
         free(resultMemory);
-//        return;
+        return;
     }
 
     RETURN_LONG(res);
@@ -136,12 +135,6 @@ PHP_MINFO_FUNCTION(gpeunit)
     php_info_print_table_end();
 }
 
-PHP_MINIT_FUNCTION(gpeunit)
-{
-    return SUCCESS;
-}
-
-
 const zend_function_entry gpeunit_functions[] = {
     PHP_FE(gpeunit_generate, NULL)
     PHP_FE(gpeunit_analyze, NULL)
@@ -154,7 +147,7 @@ zend_module_entry gpeunit_module_entry = {
     STANDARD_MODULE_HEADER,
     PHP_GPEUNIT_EXTNAME,
     gpeunit_functions,
-    PHP_MINIT(gpeunit),                /* MINIT */
+    NULL,                /* MINIT */
     NULL,                /* MSHUTDOWN */
     NULL,                /* RINIT */
     NULL,                /* RSHUTDOWN */
