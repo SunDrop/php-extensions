@@ -5,7 +5,7 @@ extern zend_module_entry gpeunit_module_entry;
 #define phpext_gpeunit_ptr &gpeunit_module_entry
 
 #define PHP_GPEUNIT_EXTNAME "gpeunit" /* Replace with version number for your extension */
-#define PHP_GPEUNIT_VERSION "2.0.0" /* Replace with version number for your extension */
+#define PHP_GPEUNIT_VERSION "2.0.3" /* Replace with version number for your extension */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
