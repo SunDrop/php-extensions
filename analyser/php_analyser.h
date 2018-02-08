@@ -2,7 +2,7 @@
 #define PHP_ANALYSER_H
 
 #define PHP_ANALYSER_EXTNAME  "analyser"
-#define PHP_ANALYSER_EXTVER   "1.0"
+#define PHP_ANALYSER_EXTVER   "1.1.0"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
