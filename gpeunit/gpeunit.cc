@@ -4,6 +4,10 @@
 #include "php_gpeunit.h"
 #include "libgpeunit.h"
 
+#if ZEND_MODULE_API_NO >= 20050101
+#define PHP7
+#endif
+
 typedef struct AnalyseGPEResult_t AnalyseGPEResult;
 
 static int le_gpeunit;
@@ -109,7 +113,11 @@ PHP_FUNCTION(gpeunit_analyze)
         // ...... copy data to your vars ....
         array_init(return_value);
         add_assoc_long(return_value, "status", funcResult->status);
+#ifdef PHP7
+        add_assoc_string(return_value, "data", funcResult->GPEData);
+#else
         add_assoc_string(return_value, "data", funcResult->GPEData, 1);
+#endif
         add_assoc_double(return_value, "score", funcResult->score);
         add_assoc_double(return_value, "scoreAdv", funcResult->scoreAdv);
         add_assoc_long(return_value, "shifts", funcResult->localShifts);
@@ -119,7 +127,11 @@ PHP_FUNCTION(gpeunit_analyze)
 
         return;
     } else {
-        RETVAL_STRING((char*)resultMemory, 1);
+#ifdef PHP7
+    RETVAL_STRING((char*)resultMemory);
+#else
+    RETVAL_STRING((char*)resultMemory, 1);
+#endif
         free(resultMemory);
         return;
     }
@@ -139,12 +151,20 @@ const char * gpeunit_lib_version()
 
 PHP_FUNCTION(gpeunit_version)
 {
+#ifdef PHP7
+    RETVAL_STRING(gpeunit_version());
+#else
     RETVAL_STRING(gpeunit_version(), 0);
+#endif
 }
 
 PHP_FUNCTION(gpeunit_lib_version)
 {
+#ifdef PHP7
+    RETVAL_STRING(gpeunit_lib_version());
+#else
     RETVAL_STRING(gpeunit_lib_version(), 0);
+#endif
 }
 
 PHP_MINFO_FUNCTION(gpeunit)
